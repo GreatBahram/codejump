@@ -1,6 +1,6 @@
 [project]
 name = "testjump"
-version = "0.1.0"
+version = "0.1.1"
 description = "A CLI tool that opens VS Code at the line where a function/method is defined"
 readme = "README.md"
 requires-python = ">=3.12"
