@@ -8,14 +8,29 @@ For interactive usage with multiple files:
 """
 
 import ast
-import sys
+import os
 import subprocess
+import sys
+from typing import Literal
+
+EditorType = Literal["vscode", "idea", "pycharm", "vim", "nvim"]
+
+
+def get_editor_command(editor: EditorType, file_path: str, line: int) -> list[str]:
+    editor_commands = {
+        "vscode": ["code", "-g", f"{file_path}:{line}"],
+        "idea": ["idea", f"{file_path}:{line}"],
+        "pycharm": ["pycharm", f"{file_path}:{line}"],
+        "vim": ["vim", f"+{line}", file_path],
+        "nvim": ["nvim", f"+{line}", file_path],
+    }
+    return editor_commands[editor]
 
 
 def find_function_line(
     file_path: str, class_name: str | None, func_name: str
 ) -> int | None:
-    with open(file_path, "r", encoding="utf-8") as fp:
+    with open(file_path, encoding="utf-8") as fp:
         tree = ast.parse(fp.read(), filename=file_path)
 
     for node in ast.walk(tree):
@@ -43,7 +58,7 @@ def parse_input(line: str) -> tuple[str, str | None, str]:
         raise ValueError(f"Invalid input format: {line}")
 
 
-def main():
+def main() -> None:
     if len(sys.argv) != 2:
         print("Usage: codejump.py path/to/file.py::[ClassName::]function")
         sys.exit(1)
@@ -51,10 +66,36 @@ def main():
     file_path, class_name, func_name = parse_input(sys.argv[1])
     line = find_function_line(file_path, class_name, func_name)
 
-    if line:
-        subprocess.run(["code", "-g", f"{file_path}:{line}"])
-    else:
-        print(f"❌ Could not find {func_name} in {file_path}", file=sys.stderr)
+    if not line:
+        print(f"Could not find {func_name} in {file_path}", file=sys.stderr)
+        sys.exit(1)
+
+    editor = os.environ.get("CODEJUMP_EDITOR", "vscode").lower()
+    valid_editors = list(EditorType.__args__)
+
+    if editor not in valid_editors:
+        print(
+            f"Invalid editor '{editor}'. Valid options are: {', '.join(valid_editors)}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    cmd = get_editor_command(editor, file_path, line)
+
+    try:
+        subprocess.run(cmd, check=True)
+    except FileNotFoundError:
+        print(
+            f"Editor '{editor}' not found. Is it installed and in your PATH?",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    except subprocess.CalledProcessError as e:
+        print(f"Editor command failed with exit code {e.returncode}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Unexpected error while running editor: {str(e)}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
