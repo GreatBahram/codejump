@@ -3,12 +3,18 @@
 A CLI tool that opens VS Code (by default) at the line where a function/method is defined.
 
 ## Installation
-
+Install this tool using pip:
 ```bash
 pip install codejump
 ```
-
-
+Or using [pipx](https://pipx.pypa.io/stable/):
+```bash
+pipx install codejump
+```
+Or using [uv](https://docs.astral.sh/uv/guides/tools/):
+```bash
+uv tool install codejump
+```
 ## Usage
 
 1. Jump to a test function:
