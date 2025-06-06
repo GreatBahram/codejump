@@ -67,6 +67,11 @@ def main() -> None:
         sys.exit(1)
 
     file_path, class_name, func_name = parse_input(sys.argv[1])
+
+    if not os.path.isfile(file_path):
+        print(f"File not found: {file_path}", file=sys.stderr)
+        sys.exit(1)
+
     line = find_function_line(file_path, class_name, func_name)
 
     if not line:
