@@ -1,4 +1,4 @@
-# CodeJump
+# TestJump (TJ)
 
 A CLI tool that helps you quickly navigate to test functions in pytest files.
 
@@ -7,19 +7,19 @@ A CLI tool that helps you quickly navigate to test functions in pytest files.
 Install this tool using pip:
 
 ```bash
-pip install codejump
+pip install testjump
 ```
 
 Or using [pipx](https://pipx.pypa.io/stable/):
 
 ```bash
-pipx install codejump
+pipx install testjump
 ```
 
 Or using [uv](https://docs.astral.sh/uv/guides/tools/):
 
 ```bash
-uv tool install codejump
+uv tool install testjump
 ```
 
 ## Usage
@@ -27,13 +27,13 @@ uv tool install codejump
 1. Jump to a test function:
 
 ```bash
-codejump tests/test_calculator.py::test_addition
+tj tests/test_calculator.py::test_addition
 ```
 
 2. Jump to a test class method:
 
 ```bash
-codejump tests/test_user.py::TestUser::test_user_creation
+tj tests/test_user.py::TestUser::test_user_creation
 ```
 
 ### Interactive Usage with Multiple Files
@@ -41,27 +41,27 @@ codejump tests/test_user.py::TestUser::test_user_creation
 You can use it interactively with a file containing multiple jump points:
 
 ```bash
-for line in $(cat jumppoints.txt); do codejump $line; echo "Press any key to continue..."; read; done
+for line in $(cat jumppoints.txt); do tj $line; echo "Press any key to continue..."; read; done
 ```
 ### Configuring Your Editor
 
-CodeJump uses VS Code by default, but you can configure your preferred editor by setting the `CODEJUMP_EDITOR` environment variable:
+TestJump uses VS Code by default, but you can configure your preferred editor by setting the `TESTJUMP_EDITOR` environment variable:
 
 ```bash
 # For VS Code (default)
-export CODEJUMP_EDITOR=vscode
+export TESTJUMP_EDITOR=vscode
 
 # For Vim
-export CODEJUMP_EDITOR=vim
+export TESTJUMP_EDITOR=vim
 
 # For IntelliJ IDEA
-export CODEJUMP_EDITOR=idea
+export TESTJUMP_EDITOR=idea
 
 # For PyCharm
-export CODEJUMP_EDITOR=pycharm
+export TESTJUMP_EDITOR=pycharm
 
 # For Neovim
-export CODEJUMP_EDITOR=nvim
+export TESTJUMP_EDITOR=nvim
 ````
 
 Add this to your `.bashrc` or `.zshrc` to make it permanent.

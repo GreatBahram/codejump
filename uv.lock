@@ -12,7 +12,7 @@ wheels = [
 ]
 
 [[package]]
-name = "codejump"
+name = "testjump"
 version = "0.1.0"
 source = { editable = "." }
 

@@ -1,12 +1,4 @@
 #!/usr/bin/env python3
-"""
-A CLI tool that opens VS Code at the line where a function/method is defined.
-Usage: codejump path/to/file.py::[ClassName::]function
-
-For interactive usage with multiple files:
-    for line in $(cat filename); do codejump $line; read; done
-"""
-
 import ast
 import os
 import subprocess
@@ -59,8 +51,19 @@ def parse_input(line: str) -> tuple[str, str | None, str]:
 
 
 def main() -> None:
+    """A CLI tool that helps you quickly navigate to test functions in pytest files.
+
+    Usage: tj path/to/file.py::[ClassName::]function
+
+    For interactive usage with multiple files:
+        for line in $(cat filename); do tj $line; echo "Press any key..."; read; done
+
+    Examples:
+        tj tests/test_calculator.py::test_addition
+        tj tests/test_user.py::TestUser::test_user_creation
+    """
     if len(sys.argv) != 2:
-        print("Usage: codejump.py path/to/file.py::[ClassName::]function")
+        print(main.__doc__)
         sys.exit(1)
 
     file_path, class_name, func_name = parse_input(sys.argv[1])
@@ -70,7 +73,7 @@ def main() -> None:
         print(f"Could not find {func_name} in {file_path}", file=sys.stderr)
         sys.exit(1)
 
-    editor = os.environ.get("CODEJUMP_EDITOR", "vscode").lower()
+    editor = os.environ.get("TESTJUMP_EDITOR", "vscode").lower()
     valid_editors = list(EditorType.__args__)
 
     if editor not in valid_editors:

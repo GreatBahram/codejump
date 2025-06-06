@@ -1,5 +1,5 @@
 [project]
-name = "codejump"
+name = "testjump"
 version = "0.1.0"
 description = "A CLI tool that opens VS Code at the line where a function/method is defined"
 readme = "README.md"
@@ -7,10 +7,10 @@ requires-python = ">=3.12"
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/greatbahram/codejump"
-Changelog = "https://github.com/greatbahram/codejump/releases"
-Issues = "https://github.com/greatbahram/codejump/issues"
-CI = "https://github.com/greatbahram/codejump/actions"
+Homepage = "https://github.com/greatbahram/testjump"
+Changelog = "https://github.com/greatbahram/testjump/releases"
+Issues = "https://github.com/greatbahram/testjump/issues"
+CI = "https://github.com/greatbahram/testjump/actions"
 
 
 [project.optional-dependencies]
@@ -21,8 +21,8 @@ dev = [
 ]
 
 [project.scripts]
-codejump = "codejump:main"
-cj = "codejump:main"
+testjump = "testjump:main"
+tj = "testjump:main"
 
 [build-system]
 requires = ["setuptools"]
@@ -70,4 +70,4 @@ select = [
 "**/conftest.py" = ["ANN"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["codejump"]
+known-first-party = ["testjump"]
