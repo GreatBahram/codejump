@@ -45,23 +45,23 @@ for line in $(cat jumppoints.txt); do tj $line; echo "Press any key to continue.
 ```
 ### Configuring Your Editor
 
-TestJump uses VS Code by default, but you can configure your preferred editor by setting the `TESTJUMP_EDITOR` environment variable:
+TestJump uses VS Code by default, but you can configure your preferred editor by setting the `TJ_EDITOR` environment variable:
 
 ```bash
 # For VS Code (default)
-export TESTJUMP_EDITOR=vscode
+export TJ_EDITOR=vscode
 
 # For Vim
-export TESTJUMP_EDITOR=vim
+export TJ_EDITOR=vim
 
 # For IntelliJ IDEA
-export TESTJUMP_EDITOR=idea
+export TJ_EDITOR=idea
 
 # For PyCharm
-export TESTJUMP_EDITOR=pycharm
+export TJ_EDITOR=pycharm
 
 # For Neovim
-export TESTJUMP_EDITOR=nvim
+export TJ_EDITOR=nvim
 ````
 
 Add this to your `.bashrc` or `.zshrc` to make it permanent.

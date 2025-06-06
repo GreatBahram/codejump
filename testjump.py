@@ -78,7 +78,7 @@ def main() -> None:
         print(f"Could not find {func_name} in {file_path}", file=sys.stderr)
         sys.exit(1)
 
-    editor = os.environ.get("TESTJUMP_EDITOR", "vscode").lower()
+    editor = os.environ.get("TJ_EDITOR", "vscode").lower()
     valid_editors = list(EditorType.__args__)
 
     if editor not in valid_editors:
