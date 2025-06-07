@@ -1,6 +1,9 @@
 # TestJump (TJ)
 
 A CLI tool that helps you quickly navigate to test functions in pytest files.
+> When making fundamental changes to a project, multiple test cases often fail.
+> Instead of manually opening files and searching for each failing test, TestJump allows you to jump directly to the test location 🤷.
+
 
 ## Installation
 
