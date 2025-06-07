@@ -39,6 +39,12 @@ tj tests/test_calculator.py::test_addition
 tj tests/test_user.py::TestUser::test_user_creation
 ```
 
+3. Jump using pytest output (supports FAILED prefix):
+
+```bash
+tj "FAILED tests/test_user.py::TestUser::test_user_creation - Failed: assertion error"
+```
+
 ### Interactive Usage with Multiple Files
 
 You can use it interactively with a file containing multiple jump points:
