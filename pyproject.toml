@@ -1,7 +1,7 @@
 [project]
 name = "testjump"
 version = "0.1.2"
-description = "A CLI tool that opens VS Code at the line where a function/method is defined"
+description = "A CLI tool that helps you quickly navigate to test functions in pytest files."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
@@ -14,11 +14,7 @@ CI = "https://github.com/greatbahram/testjump/actions"
 
 
 [project.optional-dependencies]
-dev = [
-    "pre-commit>=4.2.0",
-    "pytest>=8.3.5",
-    "ruff>=0.11.2",
-]
+dev = ["pre-commit>=4.2.0", "pytest>=8.3.5", "ruff>=0.11.2"]
 
 [project.scripts]
 testjump = "testjump:main"
@@ -29,44 +25,37 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 
-
 [tool.ruff]
 line-length = 88
 
-exclude = [".git", ".ruff_cache", ".venv",]
+exclude = [".git", ".ruff_cache", ".venv"]
 
-# Assume Python 3.13.
 target-version = "py313"
 
 [tool.ruff.lint]
 select = [
-    "ANN", # flake8-annotations
-    "C4",  # flake8-comprehensions
-    "E",   # pycodestyle error
-    "F",   # Pyflakes
-    "I",   # isort
-    "INP", # flake8-no-pep420
-    "PGH", # pygrep-hooks
-    "PIE", # flake8-pie
-    "PLC", # Pylint convention
-    "PLE", # Pylint error
-    "PLR", # Pylint refactor
-    "PLW", # Pylint warning
-    "PYI", # flake8-pyi
-    "SIM", # flake8-simplify
-    "UP",  # pyupgrade
-    "W",   # pycodestyle warning
+  "ANN", # flake8-annotations
+  "C4",  # flake8-comprehensions
+  "E",   # pycodestyle error
+  "F",   # Pyflakes
+  "I",   # isort
+  "INP", # flake8-no-pep420
+  "PGH", # pygrep-hooks
+  "PIE", # flake8-pie
+  "PLC", # Pylint convention
+  "PLE", # Pylint error
+  "PLR", # Pylint refactor
+  "PLW", # Pylint warning
+  "PYI", # flake8-pyi
+  "SIM", # flake8-simplify
+  "UP",  # pyupgrade
+  "W",   # pycodestyle warning
 ]
 
 
 [tool.ruff.lint.extend-per-file-ignores]
 "__init__.py" = ["F401"]
-"tests/*.py" = [
-  "ANN",
-  "PLR0904",
-  "PLR0913",
-  "PLR0917",
-]
+"tests/*.py" = ["ANN", "PLR0904", "PLR0913", "PLR0917"]
 "**/conftest.py" = ["ANN"]
 
 [tool.ruff.lint.isort]
