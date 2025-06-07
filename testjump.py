@@ -50,17 +50,24 @@ def find_function_line(
 
 
 def parse_input(line: str) -> tuple[Path, str | None, str]:
-    parts = line.strip().split("::")
+    if "::::" in line:
+        raise ValueError("Invalid format: too many colons")
 
-    if not parts or not all(parts):
+    import re
+
+    pattern = r"""
+        (?:FAILED\s)?    # Optional FAILED prefix
+        ([^:]+)::        # File path (capture everything until ::)
+        (?:([^:]+)::)?   # Optional class name
+        ([^\s]+)         # Test function name
+    """
+
+    match = re.match(pattern.strip(), line.strip(), re.VERBOSE)
+    if not match:
         raise ValueError(f"Invalid input format: {line}")
 
-    if len(parts) == 2:  # noqa: PLR2004
-        return Path(parts[0]), None, parts[1]
-    elif len(parts) == 3:  # noqa: PLR2004
-        return Path(parts[0]), parts[1], parts[2]
-    else:
-        raise ValueError(f"Invalid input format: {line}")
+    file_path, class_name, func_name = match.groups()
+    return Path(file_path), class_name, func_name
 
 
 def main() -> None:
