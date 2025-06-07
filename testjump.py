@@ -51,6 +51,10 @@ def find_function_line(
 
 def parse_input(line: str) -> tuple[Path, str | None, str]:
     parts = line.strip().split("::")
+
+    if not parts or not all(parts):
+        raise ValueError(f"Invalid input format: {line}")
+
     if len(parts) == 2:
         return Path(parts[0]), None, parts[1]
     elif len(parts) == 3:
