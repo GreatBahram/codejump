@@ -55,9 +55,9 @@ def parse_input(line: str) -> tuple[Path, str | None, str]:
     if not parts or not all(parts):
         raise ValueError(f"Invalid input format: {line}")
 
-    if len(parts) == 2:
+    if len(parts) == 2:  # noqa: PLR2004
         return Path(parts[0]), None, parts[1]
-    elif len(parts) == 3:
+    elif len(parts) == 3:  # noqa: PLR2004
         return Path(parts[0]), parts[1], parts[2]
     else:
         raise ValueError(f"Invalid input format: {line}")

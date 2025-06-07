@@ -55,7 +55,7 @@ select = [
 
 [tool.ruff.lint.extend-per-file-ignores]
 "__init__.py" = ["F401"]
-"tests/*.py" = ["ANN", "PLR0904", "PLR0913", "PLR0917"]
+"test_*.py" = ["ANN", "PLR0904", "PLR0913", "PLR0917"]
 "**/conftest.py" = ["ANN"]
 
 [tool.ruff.lint.isort]

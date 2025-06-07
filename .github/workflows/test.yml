@@ -1,0 +1,35 @@
+name: "Run test cases and formatter"
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "testjump.py"
+      - "tests_*"
+      - ".github/workflows/**"
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: astral-sh/setup-uv@v6
+      - name: Install dependencies
+        run: |
+          uv sync --extra dev
+      - name: Run tests
+        run: |
+          uv run pytest .
+      - name: Run linter & formatter
+        run: |
+          uv run ruff check .
+          uv run ruff format . --check
