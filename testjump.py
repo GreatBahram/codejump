@@ -124,6 +124,7 @@ def main() -> None:
                 "path": str(file_path),
                 "class_name": class_name,
                 "function_name": func_name,
+                "lineno": lineno,
             }
             print(json.dumps(result, indent=2))
 

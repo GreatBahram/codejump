@@ -54,20 +54,21 @@ TestJump supports different output formats:
 1. Print location only (useful for scripting):
 
 ```bash
-tj -print tests/test_calculator.py::test_addition
+tj tests/test_calculator.py::test_addition -print
 # Output: tests/test_calculator.py:42
 ```
 
 2. JSON output with detailed information:
 
 ```bash
-tj -json tests/test_calculator.py::test_addition
+tj tests/test_calculator.py::test_addition -json
 # Output:
 # {
 #   "status": "ok",
 #   "path": "tests/test_calculator.py",
 #   "class_name": null,
-#   "function_name": "test_addition"
+#   "function_name": "test_addition",
+#   "lineno": 11
 # }
 ```
 
