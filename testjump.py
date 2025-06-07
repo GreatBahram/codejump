@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
+import argparse
 import ast
+import json
 import os
 import subprocess
-import sys
+from enum import Enum
 from pathlib import Path
 from typing import Literal
+
+
+class Action(str, Enum):
+    PRINT = "print"
+    EDITOR = "editor"
+    JSON = "json"
+
 
 EditorType = Literal["vscode", "idea", "pycharm", "vim", "nvim"]
 
@@ -51,8 +60,7 @@ def parse_input(line: str) -> tuple[Path, str | None, str]:
 
 
 def main() -> None:
-    """A CLI tool that helps you quickly navigate to test functions in pytest files.
-
+    """
     Usage: tj path/to/file.py::[ClassName::]function
 
     For interactive usage with multiple files:
@@ -62,48 +70,77 @@ def main() -> None:
         tj tests/test_calculator.py::test_addition
         tj tests/test_user.py::TestUser::test_user_creation
     """
-    if len(sys.argv) != 2:
-        print(main.__doc__)
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description="Quickly navigate to test functions",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=main.__doc__,
+    )
+    parser.add_argument(
+        "test_path",
+        help="Path in format: path/to/file.py::[ClassName::]function",
+    )
+    parser.add_argument(
+        "--editor",
+        choices=list(EditorType.__args__),
+        default=os.environ.get("TJ_EDITOR", "vscode").lower(),
+        help="Editor to use (default: vscode)",
+    )
 
-    file_path, class_name, func_name = parse_input(sys.argv[1])
+    action_group = parser.add_mutually_exclusive_group()
+    action_group.add_argument(
+        "-print", action="store_const", const=Action.PRINT, dest="action"
+    )
+    action_group.add_argument(
+        "-editor", action="store_const", const=Action.EDITOR, dest="action"
+    )
+    action_group.add_argument(
+        "-json", action="store_const", const=Action.JSON, dest="action"
+    )
+    parser.set_defaults(action=Action.EDITOR)  # Default action
+
+    args = parser.parse_args()
+
+    try:
+        file_path, class_name, func_name = parse_input(args.test_path)
+    except ValueError as e:
+        parser.error(str(e))
 
     if not file_path.exists():
-        print(f"File not found: {file_path}", file=sys.stderr)
-        sys.exit(1)
+        parser.error("File not found")
 
-    line = find_function_line(file_path, class_name, func_name)
+    lineno = find_function_line(file_path, class_name, func_name)
 
-    if not line:
-        print(f"Could not find '{func_name}' in '{file_path}'", file=sys.stderr)
-        sys.exit(1)
+    if not lineno:
+        parser.error("Function not found")
 
-    editor = os.environ.get("TJ_EDITOR", "vscode").lower()
-    valid_editors = list(EditorType.__args__)
+    match args.action:
+        case Action.EDITOR:
+            launch_editor(parser, args.editor, file_path, lineno)
+        case Action.PRINT:
+            print(f"{file_path}:{lineno}")
+        case Action.JSON:
+            result = {
+                "status": "ok",
+                "path": str(file_path),
+                "class_name": class_name,
+                "function_name": func_name,
+            }
+            print(json.dumps(result, indent=2))
 
-    if editor not in valid_editors:
-        print(
-            f"Invalid editor '{editor}'. Valid options are: {', '.join(valid_editors)}",
-            file=sys.stderr,
-        )
-        sys.exit(1)
 
+def launch_editor(
+    parser: argparse.ArgumentParser, editor: str, file_path: Path, line: int
+) -> None:
     cmd = get_editor_command(editor, file_path, line)
 
     try:
         subprocess.run(cmd, check=True)
     except FileNotFoundError:
-        print(
-            f"Editor '{editor}' not found. Is it installed and in your PATH?",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+        parser.error(f"Editor '{editor}' not found. Is it installed and in your PATH?")
     except subprocess.CalledProcessError as e:
-        print(f"Editor command failed with exit code {e.returncode}", file=sys.stderr)
-        sys.exit(1)
+        parser.error(f"Editor command failed with exit code {e.returncode}")
     except Exception as e:
-        print(f"Unexpected error while running editor: {str(e)}", file=sys.stderr)
-        sys.exit(1)
+        parser.error(f"Unexpected error while running editor: {str(e)}")
 
 
 if __name__ == "__main__":
