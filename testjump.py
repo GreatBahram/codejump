@@ -3,6 +3,7 @@ import ast
 import os
 import subprocess
 import sys
+from pathlib import Path
 from typing import Literal
 
 EditorType = Literal["vscode", "idea", "pycharm", "vim", "nvim"]
@@ -20,10 +21,9 @@ def get_editor_command(editor: EditorType, file_path: str, line: int) -> list[st
 
 
 def find_function_line(
-    file_path: str, class_name: str | None, func_name: str
+    file_path: Path, class_name: str | None, func_name: str
 ) -> int | None:
-    with open(file_path, encoding="utf-8") as fp:
-        tree = ast.parse(fp.read(), filename=file_path)
+    tree = ast.parse(file_path.read_text(encoding="utf-8"), filename=file_path)
 
     for node in ast.walk(tree):
         if isinstance(node, ast.ClassDef) and node.name == class_name:
@@ -40,12 +40,12 @@ def find_function_line(
     return None
 
 
-def parse_input(line: str) -> tuple[str, str | None, str]:
+def parse_input(line: str) -> tuple[Path, str | None, str]:
     parts = line.strip().split("::")
     if len(parts) == 2:
-        return parts[0], None, parts[1]
+        return Path(parts[0]), None, parts[1]
     elif len(parts) == 3:
-        return parts[0], parts[1], parts[2]
+        return Path(parts[0]), parts[1], parts[2]
     else:
         raise ValueError(f"Invalid input format: {line}")
 
@@ -68,14 +68,14 @@ def main() -> None:
 
     file_path, class_name, func_name = parse_input(sys.argv[1])
 
-    if not os.path.isfile(file_path):
+    if not file_path.exists():
         print(f"File not found: {file_path}", file=sys.stderr)
         sys.exit(1)
 
     line = find_function_line(file_path, class_name, func_name)
 
     if not line:
-        print(f"Could not find {func_name} in {file_path}", file=sys.stderr)
+        print(f"Could not find '{func_name}' in '{file_path}'", file=sys.stderr)
         sys.exit(1)
 
     editor = os.environ.get("TJ_EDITOR", "vscode").lower()
